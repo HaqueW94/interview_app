@@ -1,0 +1,27 @@
+*{
+    padding:0;
+    margin:0;
+    box-sizing:border-box;
+}
+
+.form-wrapper{
+    height:300px;
+    width:300px;
+    border-radius:5px;
+    padding:1rem;
+}
+
+.errText{
+    font-size:.75rem;
+    color:red;
+}
+
+.data_item{
+    cursor: pointer;
+}
+
+.data_item:hover{
+   background-color:#0d6efd;
+   color:white;
+   cursor: pointer;
+}
