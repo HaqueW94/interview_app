@@ -1,10 +1,10 @@
 import React from "react";
 import { Navigate} from "react-router-dom";
-import { AuthContext } from "./context";
+import { useSelector } from 'react-redux';
  
 export default function PrivateRoute({children}){
-    const{isLogin}=React.useContext(AuthContext);
-    if(isLogin){
+    const auth=useSelector(state=>state.auth);
+    if(auth){
         return children;
     }
     return <Navigate to="/login" replace={false}/>

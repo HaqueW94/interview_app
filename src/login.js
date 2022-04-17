@@ -2,32 +2,33 @@ import React from 'react';
 import { Container,Button} from 'react-bootstrap';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { AuthContext } from './context';
+import {isLogin} from './redux/action';
+import { useDispatch } from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 
 export default function Login(){
-    const {handleLogin}=React.useContext(AuthContext);
+    const dispatch=useDispatch();
     const [open,setOpen]=React.useState(false);
     const navigate=useNavigate();
     const chckPsswrd=(numb)=>{
         let sum=0;
         let n1=numb;
-        while(n1!=0){
+        while(n1!==0){
             sum+=Math.floor(n1%10);
             n1=Math.floor(n1/10);
         }
         return sum;
     }
     const formik=useFormik({
-        initialValues:{email:'',password:''},
+        initialValues:{email:'test@gmail.com',password:'1234'},
         validationSchema:yup.object({
             email:yup.string().email('not a valid email').required('* Required Field'),
             password:yup.string().matches(/^[0-9]{4}$/g,'only 4 digits').required('* Required Field')
         }),
         onSubmit:values=>{
-             if(chckPsswrd(values.password)==10){
+             if(chckPsswrd(values.password)===10){
                  setOpen(false);
-                 handleLogin();
+                 dispatch(isLogin());
                  formik.resetForm();
                  return navigate('/')
              }

@@ -1,62 +1,60 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 
-export default function Dropdown({arrData}){
-   
-    let arr=arrData;
-    const [data,setData]=React.useState(arr);
+export default function Dropdown({arrData,addItem,delItem,data,name}){
+    const dispatch=useDispatch();
+    const chckItems=data;
+    const [menuItem,setMenuItem]=React.useState(arrData);
     const[open,setOpen]=React.useState(false);
-    let[dis,setDis]=React.useState(false);
-    let[disAll,setDisAll]=React.useState(false);
-    let [shw,setShw]=React.useState('block');
-    let arr2=[];
-    const chck=(e)=>{
+    const [check,setCheck]=React.useState(false);
+    const [shwMenu,setShwMenu]=React.useState('block');
+
+    
+
+    const handleCheck=(e)=>{
         if(e.target.checked){
-            if(e.target.value=='all'){
-                setDis(true);
-                setDisAll(false)
-                arr2=[...data];
-                return alert(arr2);
-            }
-            arr2.push(e.target.value);
-            setDis(false);
-            setDisAll(true);
-            return alert(arr2);
+         if(Array.isArray(JSON.parse(e.target.value))){
+             setCheck(true);
+             setOpen(false);
+            return dispatch(addItem(JSON.parse(e.target.value)));
+         }
+            setCheck(false);
+            setOpen(false);
+            return dispatch(addItem(JSON.parse(e.target.value)));
+             
         }
-        
-            if(e.target.value=='all'){
-                setDis(false);
-                setDisAll(false);
-                arr2=[];
-                return alert(arr2);
+         
+        if(!e.target.checked){
+            if(Array.isArray(JSON.parse(e.target.value))){
+                setCheck(false);
             }
-            arr2=arr2.filter(val=>{if(val!=e.target.value){return val}});
-            if(arr2?.length===0){setDisAll(false)}
-             return alert(arr2);
-        
-        
+              setOpen(false);
+              return  dispatch(delItem(JSON.parse(e.target.value)));
+        }
+               
     }
 
+
     const handleSrch=(e)=>{
-        let value=e.target.value;
-        if(value!=''){
-          let arr1=data.filter(vl=>{if(vl.includes(value)){return vl}})
-          setData(arr1);
-          setShw('none');
+        if(e.target.value!==''){
+          let arr1=menuItem.filter(vl=>{if(vl.includes(e.target.value)){return vl}});
+          setMenuItem(arr1);
+          setShwMenu('none');
         }
         else{
-            setData(arr)
-            setShw('block')
+            setMenuItem(arrData)
+            setShwMenu('block');
         }
     }
 return(
 <>
 
-    <Button id='drpbtn' className='my-4' onClick={(e)=>{setOpen(!open);}}>Dropdown </Button><br/>
+    <Button id='drpbtn' className='my-4' onClick={(e)=>{setOpen(!open);setMenuItem(arrData);setShwMenu('block')}}>Dropdown {name}</Button><br/>
     {open?<div style={{width:'250px',backgroundColor:'#ecf0f1'}} className='border'>
           <input type='text'className='w-100 py-1' placeholder='search...' onChange={handleSrch}/>
-          <div className='py-2 px-1 data_item' style={{display:shw}}><input type='checkbox' className='me-2' value='all' disabled={disAll} onClick={chck}/><label>Select All</label></div>
-          {data?.map((val,index)=>{return <div key={index} className='data_item py-2 px-1'><input type='checkbox' className='me-2' disabled={dis} value={val} onClick={chck}/><label>{val}</label></div>})}
+          <div className='py-2 px-1 data_item' style={{display:shwMenu}}><input type='checkbox' defaultChecked={check} className='me-2' value={JSON.stringify(arrData)} disabled={chckItems?.length===0?false:!check} onClick={handleCheck}/><label>Select All</label></div>
+          {menuItem?.map((val,index)=>{return <div key={index} className='data_item py-2 px-1'><input type='checkbox' className='me-2' defaultChecked={chckItems?.includes(val)&&!check?true:false} disabled={chckItems?.length===0?false:check} value={JSON.stringify(val)} onClick={handleCheck}/><label>{val}</label></div>})}
       </div>:null}
 </>
 )
