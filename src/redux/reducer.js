@@ -61,7 +61,6 @@ export const dropdwn_JS_Reducer=(state=intialData,action)=>{
 export const AuthReducer=(state=initalData2,action)=>{
                switch(action.type){
                  case login:
-                     alert(action.payload);
                      state=action.payload;
                      return state;
                  
